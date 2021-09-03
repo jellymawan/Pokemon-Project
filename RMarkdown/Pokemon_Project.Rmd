@@ -1,0 +1,119 @@
+---
+title: "Pokemon Project"
+author: "Jeleen Limawan"
+date: "6/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source("Pokemon Project.R")
+```
+
+## Project Information
+
+Pokemon was first introduced in the 1990s as a game for young children. Starting with merely 152 capturable Pokemon, the game has grew tremendously to over 800 Pokemons available. With this large inventory of Pokemon, there are many questions left unanswered.
+
+In this project, I will be answering the following questions:
+
+   Is there a correlation between legendary pokemon and capture rate?    
+   Which type is the most likely to be a legendary Pokemon?         
+   Which type is the strongest overall? Which is the weakest?         
+
+```{r clean_data}
+colnames(clean_data)
+```
+
+
+### Is there a correlation between legendary pokemon and capture rate?
+
+Legendary Pokemon are Pokemon that appears only once in the game. Most are very strong, and are capable of sweeping through many gym leaders and Elite Four members.
+
+For context, capture rate is how hard it is to capture a Pokemon. The higher (max: `r max_cr`) it is, the easier it is to catch, and the lower (min: `min_cr`) it is, the harder.
+
+```{r capture_rate, echo=FALSE, warning=FALSE}
+plot(all_bg)
+plot(bar_graph)
+```
+
+
+Through my research, I found that almost all legendary Pokemon are very hard to catch. 
+
+I can conclude that if someone encountered a legendary Pokemon, they will need to be prepared to spend some time trying to catch it. However, there seems to be an outlier in my findings. 
+The following legendary Pokemon(s) are what I consider to be outliers in my findings: `r max_cr_pok$name`.
+
+
+
+
+### Which type is the most likely to be a legendary Pokemon?
+
+```{r legendary_typ, echo=FALSE}
+plot(bar_stacked)
+```
+
+
+I was very shocked to find that the type that has the most legendary Pokemon was `r most_type$type1` I had always thought that it would be dragon or flying. I didn't know that there were that many legendary pokemon who are part `r most_type$type1`. I also was surprised to see that fairy type legendary pokemon were more common than I thought, given the typing was only established in Gen VI.
+
+
+
+### Is there a correlation between a pokemon's overall stats that makes them a legendary?
+
+```{r legendary_stat, echo=FALSE}
+plot(density)
+```
+
+###### CAVEAT: This data set includes Mega Evolved Pokemon. Some of the overall statistics for some Pokemon should be lower.
+###### What is Mega Evolution? Mega Evolution is when a Pokemon evolves once during battle with a stone called a Mega Stone. The pokemon is only mega-evolved for the duration of the battle. Mega evolved pokemon become stronger than before, with a lot of their base statistics increased
+
+It makes perfect sense to see that most legendary pokemon have a higher overall statistics when compared to normal pokemon. This graph perfectly showcases how strong legendary pokemon are compared to regular pokemon.
+
+### Which type is the strongest overall? Which is the weakest?
+
+```{r types, echo=FALSE}
+plot(type1)
+strongest <- type_avg %>% 
+   filter(mean == max(mean))
+weakest <- type_avg %>% 
+   filter(mean == min(mean))
+```
+
+###### CAVEAT: This graph only looks at the primary typings of Pokemons. Some Pokemon have a primary type and a secondary type. A Pokemon's moveset is usually heavily dependent on their primary type.
+
+Through my research, I found that the strongest type, based on overall statistics, is `r strongest$type1` with an overall mean of `r strongest$mean`. The weakest type is founded to be `r weakest$type1` with an overall mean of `r weakest$mean`. I was not surprised that the strongest pokemon type was `r strongest$type1` However, I was a little surprised that the weakest pokemon type was `r weakest$type1`. 
+
+
+### Are starter pokemon stronger than regular pokemon?
+
+In Pokemon games, trainers are blessed with an option of picking 3 starter pokemon that will accompany them in their journey. These Pokemon aren't available to catch anywhere in the region. Once a trainer has picked 1 of the 3, the other 2 are unobtainable. In a way, these pokemon are special. Compared to other Pokemon, how strong are they?
+
+```{r starter_1, echo=FALSE,message=FALSE, fig.cap="The red lines represents the starter Pokemon and the blue line represents the mean of all the Pokemon"}
+plot(f(1, starters))
+```
+
+According to my research, the overall statistics of the first evolution of starters all clutter around the median of all the first evolution Pokemon. My inference is that the Pokemon who's overall statistics are on the higher end are Pokemon who only have one evolution, like areodactyl, pinsir, heracross, etc., hence the reason I compared the starter Pokemon with the median. In regards to the first evolution of starter Pokemon, it doesn't seem like they are stronger than the first evolution of other Pokemon.
+
+```{r starter_2, echo=FALSE,message=FALSE, fig.cap="The red lines represents the starter Pokemon and the blue line represents the mean of all the Pokemon"}
+plot(f(2, starters))
+```
+
+However, when the second evolution of starters are compared to the second evolution of other Pokemon, my research shows that the all of the overall statistics of the former are a lot less than the median of the other second evolution Pokemon. This might be because there are a lot of Pokemon who are already in their final evolution (Raichu, Lopunny, etc.), which also explains why the median is a lot higher.
+
+```{r starter_3, echo=FALSE,message=FALSE, fig.cap="The red lines represents the starter Pokemon, the blue line represents the median of all the Pokemon, and the black line repreesents the mean of all Pokemon"}
+plot(f(3, starters))
+```
+
+For the third evolution of starter Pokemon, there is a little more variety. Unlike the first and second evolution of starter where the overall statistics cluttered around one area, the overall statistics of the third evolution clutter around two places. Either way, both are above the median of all Pokemon in their third evolution. I think we can say with confidence that starter Pokemon are slightly stronger than other Pokemon.
+
+
+### Why are starter Pokemon always typed grass, fire, and water?
+
+In all Pokemon games, the three starter Pokemon are always typed grass, fire, and water. To find out why this is, I decided to look at the number of weaknesses each type has to answer the following question:
+
+#### Does it have anything to do with the number of weaknesses each type has?
+
+```{r types_weakness, echo=FALSE, fig.cap="How to interpret the heatmap: the variable against type1 is the value. The higher the number, the more effective"}
+plot(type_weakness)
+```
+Originally, I thought that the reason those three types are always chosen to represent starters was because they all had the same amount of weaknesses. My guess was false. From the heatmap, grass type has 5 weaknesses, fire has 3 weaknesses, and water has 2 weaknesses. 
+
+My second guess was that the three typings create a perfect "typing triangle," where a type is weak against one type, and advantagous against another. However, this combination of types isn't the only one to have the perfect typing triangle. I can only conclude that the decision in using grass, fire, and water types was not decided by data, but by external factors.
